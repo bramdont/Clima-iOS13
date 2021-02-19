@@ -23,7 +23,7 @@ struct WeatherManager {
     
     //This method create the entire URL so we can call the API and do the Networking process
     func fetchWeather(cityName: String) {
-        let safeCity = cityName.replacingOccurrences(of: " ", with: "%20")
+        let safeCity = removeSpecialCharacter(of: cityName)
         let url = "\(mainURL)?key=\(keyAPI)&q=\(safeCity)"
         performRequest(with: url)
         print(url)
@@ -81,4 +81,14 @@ struct WeatherManager {
         }
     }
     
+    func removeSpecialCharacter(of city: String) -> String {
+        let a = city.replacingOccurrences(of: "á", with: "a")
+        let e = a.replacingOccurrences(of: "é", with: "e")
+        let i = e.replacingOccurrences(of: "í", with: "i")
+        let o = i.replacingOccurrences(of: "ó", with: "o")
+        let u = o.replacingOccurrences(of: "ú", with: "u")
+        let safeCity = u.replacingOccurrences(of: " ", with: "%20")
+        
+        return safeCity
+    }
 }
