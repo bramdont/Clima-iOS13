@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreLocation
 
 class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManagerDelegate {
     
@@ -16,9 +17,18 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
     @IBOutlet weak var searchTextField: UITextField!
     
     var weatherManager = WeatherManager()
+    var locationManager = CLLocationManager()
+    var locationBrain = LocationBrain()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //request the user to use the current location
+        locationManager.delegate = self
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.requestLocation()
+        
+        locationBrain.delegate = self
         weatherManager.delegate = self
         searchTextField.delegate = self
     }
@@ -61,6 +71,33 @@ class WeatherViewController: UIViewController, UITextFieldDelegate, WeatherManag
     
     func didFailWithError(_ error: Error) {
         print(error)
+    }
+    
+}
+
+//MARK: - CLLocationManagerDelegate
+
+extension WeatherViewController: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.last {
+            let lat = location.coordinate.latitude
+            let lon = location.coordinate.longitude
+            
+            locationBrain.fetchLocation(lat: String(lat), long: String(lon))
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print(error)
+    }
+}
+
+//MARK: - LocationDelegate
+
+extension WeatherViewController: LocationBrainDelagate {
+    func didLocationUpdate(location: LocationModel) {
+        weatherManager.fetchWeather(cityName: "\(location.city)")
+        print("\(location.city)")
     }
 }
 

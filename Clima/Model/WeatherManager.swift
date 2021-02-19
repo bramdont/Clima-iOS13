@@ -32,8 +32,9 @@ struct WeatherManager {
     //Networking
     func performRequest(with urlString: String) {
         //Create an URL
+        print("casi llegamos")
         if let url = URL(string: urlString){
-            
+            print("Llegamos al url \(url)")
             //Create an url session
             let session = URLSession(configuration: .default)
             
