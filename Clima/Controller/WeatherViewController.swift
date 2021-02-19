@@ -96,8 +96,11 @@ extension WeatherViewController: CLLocationManagerDelegate {
 
 extension WeatherViewController: LocationBrainDelagate {
     func didLocationUpdate(location: LocationModel) {
-        weatherManager.fetchWeather(cityName: "\(location.city)")
-        print("\(location.city)")
+        DispatchQueue.main.async {
+            self.weatherManager.fetchWeather(cityName: "\(location.city) \(location.region)")
+            print("\(location.city)")
+        }
+        
     }
 }
 
